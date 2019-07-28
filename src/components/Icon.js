@@ -1,9 +1,13 @@
 // Icon.js
-import { useContext } from 'react'
+import React, { useContext } from 'react'
 import { ExpandableContext } from './Expandable'
 
-const Icon = () => {
+const Icon = ({ ...otherProps }) => {
   const { expanded } = useContext(ExpandableContext)
-  return expanded ? '-' : '+'
+  return (
+      <span {...otherProps}>
+          {expanded ? '-' : '+'}
+      </span>
+  )
 }
 export default Icon

@@ -1,9 +1,13 @@
 // Body.js
-import { useContext } from 'react'
+import React, { useContext } from 'react'
 import { ExpandableContext } from './Expandable'
 
-const Body = ({ children }) => {
+const Body = ({ children, ...otherProps }) => {
   const { expanded } = useContext(ExpandableContext)
-  return expanded ? children : null
+  return expanded ? (
+    <div {...otherProps}>
+        {children}
+    </div>
+  ) : null
 }
 export default Body

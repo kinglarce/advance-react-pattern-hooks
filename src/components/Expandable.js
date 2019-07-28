@@ -1,4 +1,11 @@
-import React, { createContext, useState, useCallback, useMemo, useEffect, useRef } from 'react'
+import React, { 
+    createContext, 
+    useState, 
+    useCallback, 
+    useMemo, 
+    useEffect, 
+    useRef 
+} from 'react'
 import Header from './Header'
 import Icon from './Icon'
 import Body from './Body'
@@ -8,18 +15,22 @@ export const ExpandableContext = createContext()
 // This will always have "Provider object"
 const { Provider } = ExpandableContext
 
-const Expandable = ({ children, onExpand }) => {
+const Expandable = ({ children, onExpand, shouldExpand, ...otherProps }) => {
     const [expanded, setExpanded] = useState(false)
     const toggle = useCallback(
         () => setExpanded(prevExpanded => !prevExpanded),
         []
     )
-   
+    
+    const isExpandControlled = shouldExpand !== undefined
+    const getToggle = isExpandControlled ? onExpand : toggle
+    const getExpanded = isExpandControlled ? shouldExpand : expanded
+
     // `useMemo` takes a callback that returns the object value `{expanded, toggle}`
     // and we pass an array dependency [expanded, toggle]
     const value = useMemo(
-      () => ({ expanded, toggle }), 
-      [expanded, toggle]
+      () => ({ expanded: getExpanded, toggle: getToggle }), 
+      [getExpanded, getToggle]
     )
     
     // This will keep the value constant and prevent from changing when we're re-rendering
@@ -29,7 +40,7 @@ const Expandable = ({ children, onExpand }) => {
     // changed value and prevent calling it on mounting 
     useEffect(
         () => {
-        if (!componentJustMounted.current) {
+        if (!componentJustMounted.current && !isExpandControlled) {
                 // This is a custom function from the caller of the `Expandable` component
                 // to trigger a callback if `expanded` changed values
                 onExpand(expanded)
@@ -39,11 +50,17 @@ const Expandable = ({ children, onExpand }) => {
         // React Hook useEffect has a missing dependency: 'onExpand'. Either include it or 
         // remove the dependency array. If 'onExpand' changes too often, find the parent 
         // component that defines it and wrap that definition in useCallback
-        [expanded, onExpand]
+        [expanded, onExpand, isExpandControlled]
     )
-    return <Provider value={value}>{children}</Provider>
+    return (
+        <Provider value={value}>
+            <div {...otherProps}>
+                {children}
+            </div>
+        </Provider>
+    )
 }
-  
+
 Expandable.Header = Header
 Expandable.Body = Body
 Expandable.Icon = Icon
