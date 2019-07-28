@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import Expandable from './components/Expandable'
 import useExpanded from './useExpanded.js'
 import useEffectAfterMount from './useEffectAfterMount.js'
+import Header from './components/Header'
+import Icon from './components/Icon'
+import Body from './components/Body'
+
+import { longText as TermsAndConditionText } from './components/utils'
 
 const doSomethingPersonal = () => {
   console.log('somethins expanded');
@@ -45,20 +50,26 @@ const information = [
 // }
 
 function App () {
-  const { expanded, getTogglerProps } = useExpanded()
+  const { expanded, toggle, reset, resetDep } = useExpanded(false)
+  console.log('the rendering : ', resetDep);
+  useEffectAfterMount(
+    () => {
+      console.log('reset cleanup in progress!!!!')
+    }, 
+    [resetDep]
+  )
+
   return (
-    <div style={{ marginTop: '3rem' }}>
-      <button
-          {...getTogglerProps({
-            id: 'my-btn-id',
-            'aria-label': 'custom toggler',
-            onClick: doSomethingPersonal
-          })}
-        >
-          Click to view awesomeness...
-      </button>
-      {expanded ? <p>{'😎'.repeat(50)}</p> : null}
-    </div>
+    <section className='App'>
+      <div className='Expandable'>
+        <Header toggle={toggle}> Terms and Conditions </Header>
+        <Icon expanded={expanded} />
+        <Body expanded={expanded}>
+          {TermsAndConditionText}
+          <button onClick={reset}>reset</button>
+        </Body>
+      </div>
+    </section>
   )
 }
 

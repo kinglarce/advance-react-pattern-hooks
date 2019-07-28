@@ -1,5 +1,5 @@
 // useExpanded.js
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState, useRef } from 'react'
 
 // This will loop through and will invoke all the function that are 
 // in the list
@@ -10,11 +10,21 @@ const callFunctionsInSequence = (...fns) =>
         return fns.forEach(fn => fn && fn(...args))
     }
 
-export default function useExpanded () {
-    const [expanded, setExpanded] = useState(false)
+export default function useExpanded (initialExpanded = false) {
+    const [expanded, setExpanded] = useState(initialExpanded)
     const toggle = useCallback(
         () => setExpanded(prevExpanded => !prevExpanded),
         []
+    )
+    const resetRef = useRef(0)
+    const reset = useCallback(
+        () => {
+            // perform actual reset 
+            setExpanded(initialExpanded)
+            // update reset count
+            ++resetRef.current
+        },
+        [initialExpanded]
     )
 
     // Props Collection
@@ -44,8 +54,14 @@ export default function useExpanded () {
     // Note that we’ve called this props collection togglerProps because it 
     // is a prop collection for the toggler
     const value = useMemo(
-        () => ({ expanded, toggle, getTogglerProps }), 
-        [expanded, toggle, getTogglerProps]
+        () => ({ 
+            expanded, 
+            toggle, 
+            getTogglerProps,
+            reset,
+            resetDep: resetRef.current
+        }), 
+        [expanded, toggle, getTogglerProps, reset, resetRef]
     )
 
   return value

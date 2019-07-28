@@ -2,8 +2,7 @@
 import React, { useContext } from 'react'
 import { ExpandableContext } from './Expandable'
 
-const Icon = ({ ...otherProps }) => {
-  const { expanded } = useContext(ExpandableContext)
+const Icon = ({ expanded, ...otherProps }) => {
   return (
       <span {...otherProps}>
           {expanded ? '-' : '+'}

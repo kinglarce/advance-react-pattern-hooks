@@ -2,8 +2,7 @@
 import React, { useContext } from 'react'
 import { ExpandableContext } from './Expandable'
 
-const Header = ({ children, ...otherProps }) => {
-  const { toggle } = useContext(ExpandableContext)
+const Header = ({ children, toggle, ...otherProps }) => {
   return (
     <button onClick={toggle} {...otherProps}>
         {children}
