@@ -45,18 +45,10 @@ const information = [
 // }
 
 function App () {
-  const { expanded, toggle } = useExpanded()	
-  // look here 👇
-  useEffectAfterMount(
-    () => {
-      // user can perform any side effect here 👇
-      console.log('Yay! button was clicked!!')
-    },
-    [expanded]
-  )
+  const { expanded, togglerProps } = useExpanded()
   return (
     <div style={{ marginTop: '3rem' }}>
-      <button onClick={toggle}>Click to view awesomeness...</button>
+      <button {...togglerProps}>Click to view awesomeness...</button>
       {expanded ? <p>{'😎'.repeat(50)}</p> : null}
     </div>
   )
