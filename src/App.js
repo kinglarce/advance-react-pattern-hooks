@@ -45,10 +45,18 @@ const information = [
 // }
 
 function App () {
-  const { expanded, togglerProps } = useExpanded()
+  const { expanded, getTogglerProps } = useExpanded()
   return (
     <div style={{ marginTop: '3rem' }}>
-      <button {...togglerProps}>Click to view awesomeness...</button>
+      <button
+          {...getTogglerProps({
+            id: 'my-btn-id',
+            'aria-label': 'custom toggler',
+            onClick: doSomethingPersonal
+          })}
+        >
+          Click to view awesomeness...
+      </button>
       {expanded ? <p>{'😎'.repeat(50)}</p> : null}
     </div>
   )
